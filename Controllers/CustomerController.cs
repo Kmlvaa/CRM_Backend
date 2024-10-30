@@ -11,6 +11,7 @@ namespace CRM.Controllers
 {
     [Route("api")]
     [ApiController]
+    [Authorize]
     public class CustomerController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -24,7 +25,6 @@ namespace CRM.Controllers
 
         [HttpGet]
         [Route("getAllCustomers")]
-        [Authorize]
         public IActionResult GetCustomers()
         {
             var customers = _context.Customers.ToList();
@@ -47,8 +47,7 @@ namespace CRM.Controllers
 
         [HttpPost]
         [Route("AddCustomer")]
-        [Authorize]
-        public IActionResult AddCustomer([FromBody] AddCustomerDTO dto)
+        public IActionResult AddCustomer([FromForm] AddCustomerDTO dto)
         {
             if (!ModelState.IsValid)
             {

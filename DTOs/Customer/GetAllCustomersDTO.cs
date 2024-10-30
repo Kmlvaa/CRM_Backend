@@ -1,4 +1,6 @@
-﻿namespace CRM.DTOs.Customer
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CRM.DTOs.Customer
 {
     public class GetAllCustomersDTO
     {

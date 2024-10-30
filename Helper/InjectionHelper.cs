@@ -30,7 +30,7 @@ namespace CRM.Helper
                 opt.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
-                    Description = "Enter the Bearer Authorization : Bearer Genreated-JWT-Token",
+                    Description = "Enter the Bearer Authorization : Bearer Genereated-JWT-Token",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
                     Scheme = "Bearer"
@@ -44,7 +44,7 @@ namespace CRM.Helper
                             Reference = new OpenApiReference
                             {
                                 Type=ReferenceType.SecurityScheme,
-                                Id=JwtBearerDefaults.AuthenticationScheme,
+                                Id="Bearer"
                             }
                         },new string[]{}
                     }
@@ -88,6 +88,8 @@ namespace CRM.Helper
             builder.Services.AddFluentValidationAutoValidation()
                 .AddFluentValidationClientsideAdapters()
                 .AddValidatorsFromAssemblyContaining<Program>();
+
+            
         }
     }
 }

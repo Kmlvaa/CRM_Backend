@@ -29,9 +29,14 @@ namespace CRM.Services
         public async Task<(int, string)> Register(RegisterDTO dto, string role)
         {
             var existedUser = await _userManager.FindByNameAsync(dto.Name);
-            if(existedUser != null)
+            if (existedUser != null)
             {
                 return (0, "User already exist!");
+            }
+            var existedUserEmailCheck = await _userManager.FindByEmailAsync(dto.Email);
+            if (existedUserEmailCheck != null)
+            {
+                return (0, "This email address already has account!");
             }
 
             User user = new User()
@@ -50,12 +55,12 @@ namespace CRM.Services
                 return (0, message);
             }
 
-            if(!await _roleManager.RoleExistsAsync(role))
+            if (!await _roleManager.RoleExistsAsync(role))
             {
                 await _roleManager.CreateAsync(new IdentityRole(role));
             }
 
-            if(await _roleManager.RoleExistsAsync(role))
+            if (await _roleManager.RoleExistsAsync(role))
             {
                 await _userManager.AddToRoleAsync(user, role);
             }
@@ -70,12 +75,12 @@ namespace CRM.Services
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
 
-            if(user is null)
+            if (user is null)
             {
                 return (0, "", "User not found!");
             }
 
-            if(!await _userManager.CheckPasswordAsync(user, dto.Password))
+            if (!await _userManager.CheckPasswordAsync(user, dto.Password))
             {
                 return (0, "", "Password is invalid");
             }
@@ -88,14 +93,17 @@ namespace CRM.Services
 
             var userRoles = await _userManager.GetRolesAsync(user);
 
-            foreach(var role in userRoles)
+            foreach (var role in userRoles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
             }
 
             string token = GenerateToken(authClaims);
 
-            return (1, token, "User Logged in successfully!");
+            string name = _appDbContext.AppUsers.FirstOrDefault(x => x.Email == dto.Email).Name;
+            if (name is null) return (0, "", "");
+
+            return (1, token, $"Welcome {name}");
         }
 
         private string GenerateToken(IEnumerable<Claim> claims)

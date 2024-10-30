@@ -4,7 +4,7 @@ namespace CRM
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +16,18 @@ namespace CRM
 
             builder.Services.AddAppServices(builder);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "Cors",
+                                  policy =>
+                                  {
+                                      policy.AllowAnyOrigin().AllowAnyHeader();
+                                  });
+            });
+
             var app = builder.Build();
+
+            await DataSeed.InitializeAsync(app.Services);
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -28,7 +39,10 @@ namespace CRM
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
+
             app.UseAuthorization();
+
+            app.UseCors("Cors");
 
             app.MapControllers();
 

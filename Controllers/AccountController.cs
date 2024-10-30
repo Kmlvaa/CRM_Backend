@@ -34,7 +34,11 @@ namespace CRM.Controllers
             if (status == 0)
                 return BadRequest(message);
 
-            return Ok(message);
+            return Ok(new LoginInfoDTO()
+            {
+                Message = message,
+                Token = token
+            });
         }
 
         [HttpPost]
