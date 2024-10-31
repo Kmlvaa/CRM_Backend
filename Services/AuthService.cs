@@ -82,7 +82,7 @@ namespace CRM.Services
 
             if (!await _userManager.CheckPasswordAsync(user, dto.Password))
             {
-                return (0, "", "Password is invalid");
+                return (0, "", "Password is wrong");
             }
 
             var authClaims = new List<Claim>
